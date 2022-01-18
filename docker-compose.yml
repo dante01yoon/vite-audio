@@ -1,13 +1,13 @@
 version: "3"
 services:
-  web:
+  frontend:
     build: 
+      context: ./frontend
       dockerfile: Dockerfile.dev
-      context: ./
     image: dante01yoon/vite-audio:web
     ports:
-      - 3000:3000
+      - "3000:3000"
     volumes:
-      - /app/node_modules
-      - ./:/app
+      - /app/frontend/node_modules
+      - ./frontend:/app/frontend
     stdin_open: true

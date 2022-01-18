@@ -2,9 +2,9 @@ FROM node:alpine
 
 LABEL dante01yoon <bunggl@naver.com>
 
-WORKDIR /app
+WORKDIR /app/frontend
 
-COPY package.json ./
+COPY package.json .
 
 RUN yarn install
 
