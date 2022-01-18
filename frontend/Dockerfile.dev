@@ -4,11 +4,11 @@ LABEL dante01yoon <bunggl@naver.com>
 
 WORKDIR /app
 
-COPY package.json ./frontend/
+COPY package.json ./
 
 RUN yarn install
 
-COPY ./ ./frontend/
+COPY ./ ./
 
 ENV NODE_ENV development
 
