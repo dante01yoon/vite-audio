@@ -4,10 +4,22 @@ services:
     build: 
       context: ./frontend
       dockerfile: Dockerfile.dev
-    image: dante01yoon/vite-audio:web
+    image: dante01yoon/vite-audio:frontend
     ports:
       - "3000:3000"
     volumes:
       - /app/frontend/node_modules
       - ./frontend:/app/frontend
     stdin_open: true
+  
+  backend: 
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    image: dante01yoon/vite-audio:backend
+    ports:
+      - "4000:4000"
+    volumes:
+      - /app/backend/node_modules
+      - ./backend:/app/backend
+      
