@@ -17,5 +17,8 @@ export default defineConfig({
       { find: "@utils", replacement: path.resolve(__dirname, "src/utils")}
     ]
   },
+  server: {
+    host: true,
+  },
   plugins: [react()]
 })
