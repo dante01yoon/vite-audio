@@ -6,7 +6,7 @@ interface IndexPageProps {
 
 const IndexPage: FC<IndexPageProps> = () => {
   return (
-    <div>Index Page</div>
+    <div>Index Page Test</div>
   )
 }
 

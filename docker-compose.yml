@@ -1,24 +1,40 @@
 version: "3"
 services:
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./frontend/nginx
+    volumes:
+      - ./frontend/nginx/logs:/var/log/nginx
+    image: dante01yoon/vite-audio:nginx
+    ports:
+      - '3000:80'
+    depends_on:
+      - frontend
+      - backend
+  
   frontend:
     build: 
       context: ./frontend
       dockerfile: Dockerfile.dev
     image: dante01yoon/vite-audio:frontend
-    ports:
-      - "3000:3000"
     volumes:
       - /app/frontend/node_modules
       - ./frontend:/app/frontend
+    env_file:
+      - .env
+    expose:
+      - 3000
     stdin_open: true
-  
+
   backend: 
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
     image: dante01yoon/vite-audio:backend
-    ports:
-      - "4000:4000"
+    env_file:
+      - .env
     volumes:
       - /app/backend/node_modules
       - ./backend:/app/backend
