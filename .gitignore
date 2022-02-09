@@ -3,4 +3,7 @@ node_modules
 dist
 dist-ssr
 *.local
+# frontend
 frontend/nginx/logs
+# backend
+backend/google_application.json
