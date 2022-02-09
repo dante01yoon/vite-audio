@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { TextBox } from "@components/index"
 
 interface IndexPageProps {
   
@@ -6,7 +7,10 @@ interface IndexPageProps {
 
 const IndexPage: FC<IndexPageProps> = () => {
   return (
-    <div>Index Page Test</div>
+    <div className="container mx-auto px-14 flex flex-row">
+      <TextBox flexBasis="basis-1/2"/>
+      <TextBox flexBasis="basis-1/2" readOnly />
+    </div>
   )
 }
 

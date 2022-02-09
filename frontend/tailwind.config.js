@@ -7,5 +7,13 @@ module.exports = {
     extend: {},
   },
   plugins: [
+    function({addComponents}) {
+      addComponents({
+        '.container': {
+          maxWidth: '1200px',
+          height: '100%',
+        }
+      })
+    }
   ],
 }
