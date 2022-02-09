@@ -17,7 +17,7 @@ export const TextBox: FC<TextBoxProps> = ({
       type="text"
       value={value}
       disabled={readOnly}
-      className={cs({[flexBasis || ""]: flexBasis})}
+      className={`${cs({[flexBasis || ""]: flexBasis})} border border-solid border-black opacity-50 w-full `}
     />
   )
 }

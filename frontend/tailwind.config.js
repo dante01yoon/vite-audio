@@ -4,7 +4,17 @@ module.exports = {
     "./*.html"
   ],
   theme: {
-    extend: {},
+    fontSize: {
+      T: ['36px', '36px']
+    },
+    fontFamily: {
+      notoSans: ['"Noto Sans KR"', 'Roboto', 'sans-serif']
+    },
+    extend: {
+      gap: {
+        46: '46px'
+      }
+    },
   },
   plugins: [
     function({addComponents}) {
