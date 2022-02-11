@@ -1,0 +1,11 @@
+.cmp_button_black {
+  display: block;
+  background-color: #3f3e3e;
+  color: #fff;
+  width: 100%;
+  border-radius: 6px;
+
+  &:hover {
+    background-color: #000;
+  }
+}

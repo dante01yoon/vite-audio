@@ -1,0 +1,12 @@
+.cmp_text_field_wrapper {
+  color: #000;
+  position: relative;
+  opacity: 0.5;
+
+  & > input {
+    width: 100%;
+    max-width: 300px;
+    padding: 6px 12px;
+    box-sizing: border-box;
+  }
+}

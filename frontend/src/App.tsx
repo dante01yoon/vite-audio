@@ -11,7 +11,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <header></header>
-        <main>
+        <main className="container mx-auto">
           <AppRoute />
         </main>
       </BrowserRouter>

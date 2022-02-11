@@ -14,7 +14,7 @@ export const TextBox: FC<TextBoxProps> = ({ readOnly = false, value, flexBasis }
       disabled={readOnly}
       className={`${cs({
         [flexBasis || '']: flexBasis
-      })} border border-solid border-black opacity-50 w-full px-[12px] py-[13px]`}
+      })} border border-solid border-black opacity-50 w-full px-[12px] py-[13px] h-[338px] overflow-y-auto`}
     />
   );
 };

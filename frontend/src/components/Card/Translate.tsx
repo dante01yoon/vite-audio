@@ -15,7 +15,7 @@ export const Translate: FC<TranslateProps> = ({
   flexBasis,
   readOnly
 }) => {
-  const [language, setLanguage] = useState(getLanguage(languageFrom));
+  const [language] = useState(getLanguage(languageFrom));
 
   return (
     <div className={cs({ [flexBasis || '']: flexBasis, [width || '']: width })}>
