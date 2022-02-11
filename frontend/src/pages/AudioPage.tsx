@@ -1,13 +1,9 @@
-import { FC } from "react";
+import { FC } from 'react';
 
-interface AudioPageProps {
-
-}
+interface AudioPageProps {}
 
 const AudioPage: FC<AudioPageProps> = () => {
-  return (
-    <div>audio page</div>
-  )
-}
+  return <div>audio page</div>;
+};
 
 export default AudioPage;

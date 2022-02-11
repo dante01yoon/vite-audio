@@ -1,19 +1,26 @@
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,tsx,html}",
-    "./*.html"
-  ],
+  content: ['./src/**/*.{js,jsx,tsx,html}', './*.html'],
   theme: {
-    extend: {},
+    fontSize: {
+      T: ['36px', '36px']
+    },
+    fontFamily: {
+      notoSans: ['"Noto Sans KR"', 'Roboto', 'sans-serif']
+    },
+    extend: {
+      gap: {
+        46: '46px'
+      }
+    }
   },
   plugins: [
-    function({addComponents}) {
+    function ({ addComponents }) {
       addComponents({
         '.container': {
           maxWidth: '1200px',
-          height: '100%',
+          height: '100%'
         }
-      })
+      });
     }
-  ],
-}
+  ]
+};
