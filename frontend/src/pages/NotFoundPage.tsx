@@ -1,11 +1,9 @@
-import { FC } from "react";
+import { FC } from 'react';
 
-interface NotFoundPageProps {
-  
-}
+interface NotFoundPageProps {}
 
-const NotFoundPage: FC<NotFoundPageProps>  = () => {
-  return <div>404</div>
-}
+const NotFoundPage: FC<NotFoundPageProps> = () => {
+  return <div>404</div>;
+};
 
 export default NotFoundPage;

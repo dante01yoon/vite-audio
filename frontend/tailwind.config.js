@@ -1,8 +1,5 @@
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,tsx,html}",
-    "./*.html"
-  ],
+  content: ['./src/**/*.{js,jsx,tsx,html}', './*.html'],
   theme: {
     fontSize: {
       T: ['36px', '36px']
@@ -14,16 +11,16 @@ module.exports = {
       gap: {
         46: '46px'
       }
-    },
+    }
   },
   plugins: [
-    function({addComponents}) {
+    function ({ addComponents }) {
       addComponents({
         '.container': {
           maxWidth: '1200px',
-          height: '100%',
+          height: '100%'
         }
-      })
+      });
     }
-  ],
-}
+  ]
+};

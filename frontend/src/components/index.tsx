@@ -1,2 +1,2 @@
-export * from "./TextBox";
-export * from "./Card/Translate";
+export * from './TextBox';
+export * from './Card/Translate';

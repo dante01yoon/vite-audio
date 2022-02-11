@@ -5,7 +5,10 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "stylelint": "stylelint **/*.scss --fix"
+    "stylelint": "stylelint **/*.scss --fix",
+    "eslint": "eslint --fix",
+    "lint": "yarn eslint && yarn stylelint",
+    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
     "axios": "^0.25.0",
