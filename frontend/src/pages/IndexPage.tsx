@@ -1,9 +1,19 @@
 import { FC } from 'react';
 import { Translate, BlackButton, Icon, TextField } from '@components/index';
+import { useMachine } from '@xstate/react';
+import { buildCardMachine } from '../store/machines';
 
 interface IndexPageProps {}
 
 const IndexPage: FC<IndexPageProps> = () => {
+  const [builder, sendBuilder] = useMachine(buildCardMachine);
+
+  console.log(builder);
+
+  const handleCreateCard = () => {
+    sendBuilder('CREATE');
+  };
+
   return (
     <>
       <section className="flex gap-46">
@@ -27,7 +37,9 @@ const IndexPage: FC<IndexPageProps> = () => {
             <div className="border-[4px] border-black max-w-[577px] w-full mr-[52px]">
               <TextField header="원문 링크: " className="px-[4px] gap-[52px] w-full " />
             </div>
-            <BlackButton className="max-w-[577px]"> 카드 생성 꼬우</BlackButton>
+            <BlackButton className="max-w-[577px]" onClick={handleCreateCard}>
+              카드 생성 꼬우
+            </BlackButton>
           </div>
         </article>
       </section>
