@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { Translate, BlackButton, Icon, TextField } from '@components/index';
 import { useMachine } from '@xstate/react';
 import { buildCardMachine } from '../store/machines';

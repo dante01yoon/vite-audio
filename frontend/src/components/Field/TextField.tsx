@@ -19,7 +19,6 @@ export const TextField: FC<TextFieldProps> = ({
   required = false,
   ...props
 }) => {
-  console.log(name, required);
   return (
     <div className={`cmp_text_field_wrapper ${className}`}>
       {header && <label>{header}</label>}
