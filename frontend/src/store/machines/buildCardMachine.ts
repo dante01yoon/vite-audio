@@ -8,24 +8,69 @@ const machineState: Record<BUILD_CARD_MACHINE_STATE, BUILD_CARD_MACHINE_STATE> =
   deleted: 'deleted'
 };
 
-export const buildCardMachine = createMachine({
-  id: 'buildCard',
-  initial: machineState.initial,
-  states: {
-    [machineState.initial]: {
-      on: {
-        CREATE: machineState.created
-      }
+interface Context {
+  original?: string;
+  translated?: string;
+  title?: string;
+  link?: string;
+}
+
+// xstate 문서의 네이밍 컨벤션을 따름
+type CREATE_OBJECT = {
+  type: 'CREATE';
+  data: Context;
+};
+
+type DELETE_OBJECT = {
+  type: 'DELETE';
+};
+
+export const buildCardMachine = createMachine(
+  {
+    id: 'buildCard',
+    schema: {
+      context: {} as Context,
+      events: {} as CREATE_OBJECT | DELETE_OBJECT
     },
-    [machineState.created]: {
-      on: {
-        DELETE: machineState.deleted
+    initial: machineState.initial,
+    states: {
+      [machineState.initial]: {
+        on: {
+          CREATE: {
+            target: machineState.created,
+            actions: 'create'
+          }
+        }
+      },
+      [machineState.created]: {
+        on: {
+          DELETE: {
+            target: machineState.deleted
+          },
+          CREATE: {
+            target: machineState.created,
+            actions: 'create'
+          }
+        }
+      },
+      [machineState.deleted]: {
+        on: {
+          CREATE: {
+            target: machineState.created,
+            actions: 'create'
+          }
+        }
       }
-    },
-    [machineState.deleted]: {
-      on: {
-        CREATE: machineState.created
+    }
+  },
+  {
+    actions: {
+      create: (_, event) => {
+        if (event.type === 'CREATE') {
+          const { original, translated, title, link } = event.data;
+          return { original, translated, title, link };
+        }
       }
     }
   }
-});
+);
