@@ -2,8 +2,12 @@ import { useState, FC } from 'react';
 import { TextBox, TextBoxProps } from '..';
 import { getLanguage } from '@utils/.';
 import cs from 'classnames';
-
+import { omit } from 'rambda';
 export interface TranslateProps extends Pick<TextBoxProps, 'readOnly'> {
+  name: string;
+  register: (param: any) => void;
+  minLength?: number;
+  maxLength?: number;
   flexBasis?: string;
   width?: string;
   languageFrom?: string;
@@ -13,14 +17,25 @@ export const Translate: FC<TranslateProps> = ({
   languageFrom = 'kr',
   width,
   flexBasis,
-  readOnly
+  readOnly,
+  register,
+  ...props
 }) => {
   const [language] = useState(getLanguage(languageFrom));
+  const { name, minLength, maxLength } = props;
 
   return (
-    <div className={cs({ [flexBasis || '']: flexBasis, [width || '']: width })}>
+    <div
+      className={cs({ [flexBasis || '']: flexBasis, [width || '']: width })}
+      {...omit(['name', 'minLength', 'maxLength'], props)}>
       <div className="mb-[37px] font-normal text-T">{language}</div>
-      <TextBox readOnly={readOnly} />
+      <TextBox
+        readOnly={readOnly}
+        name={name}
+        minLength={minLength}
+        maxLength={maxLength}
+        register={register}
+      />
     </div>
   );
 };
