@@ -26,9 +26,7 @@ jobs:
       # ESLint and Prettier must be in `package.json`
       - name: frontend install dependencies
         working-directory: ./frontend
-        run: |
-          cd frontend
-          yarn install
+        run: yarn install
 
       - name: Run linters
         working-directory: ./frontend
