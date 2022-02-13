@@ -10,6 +10,10 @@ module.exports = {
     extend: {
       gap: {
         46: '46px'
+      },
+      colors: {
+        cardText: '#756d6d',
+        cardBorder: '#153dca'
       }
     }
   },
