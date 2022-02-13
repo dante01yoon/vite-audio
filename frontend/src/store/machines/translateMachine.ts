@@ -1,4 +1,4 @@
-import { createMachine } from 'xstate';
+import { createMachine, assign } from 'xstate';
 
 const machineState = {
   loading: 'loading',
@@ -18,8 +18,8 @@ type TRANSLATE = {
 };
 
 // fetch 이후 normalize 해야 함
-const fetchTranslate = (context: Context): Promise<TRANSLATE> => {
-  return Promise.resolve({ type: 'TRANSLATE', data: { original: '', translated: '', audio: '' } });
+const fetchTranslate = (context: Context): Promise<TRANSLATE['data']> => {
+  return Promise.resolve({ original: '', translated: 'translated complete', audio: '' });
 };
 
 export const translateMachine = createMachine(
@@ -56,7 +56,7 @@ export const translateMachine = createMachine(
   },
   {
     actions: {
-      update: (_, event) => event.data
+      update: assign((_, event: TRANSLATE) => event.data)
     }
   }
 );
