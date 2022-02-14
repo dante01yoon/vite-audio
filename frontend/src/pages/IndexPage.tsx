@@ -1,13 +1,15 @@
 import { FC } from 'react';
 import { Translate, BlackButton, Icon, TextField } from '@components/index';
 import { useMachine } from '@xstate/react';
-import { buildCardMachine } from '../store/machines';
+import { buildCardMachine, translateMachine } from '../store/machines';
 import { useForm } from 'react-hook-form';
 
 interface IndexPageProps {}
 
 const IndexPage: FC<IndexPageProps> = () => {
   const [builder, sendBuilder] = useMachine(buildCardMachine);
+  const [translator, sendTranslator] = useMachine(translateMachine);
+
   const {
     register,
     formState: { errors },
@@ -34,12 +36,23 @@ const IndexPage: FC<IndexPageProps> = () => {
     });
   };
 
+  const handleTranslate = () => {
+    sendTranslator({
+      type: 'TRANSLATE',
+      data: {
+        original
+      }
+    });
+  };
+
   return (
     <>
       <section className="flex gap-46">
         <article className="w-full">
           <Translate register={register} name="original" maxLength={300} />
-          <BlackButton className="mt-[37px]">번역 꼬우</BlackButton>
+          <BlackButton className="mt-[37px]" onClick={handleTranslate}>
+            번역 꼬우
+          </BlackButton>
         </article>
         <article className="w-full">
           <Translate register={register} name="translated" readOnly languageFrom="en" />

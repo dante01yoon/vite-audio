@@ -1,4 +1,4 @@
-import { createMachine } from 'xstate';
+import { createMachine, assign } from 'xstate';
 
 export type BUILD_CARD_MACHINE_STATE = 'initial' | 'created' | 'deleted';
 
@@ -15,7 +15,6 @@ interface Context {
   link?: string;
 }
 
-// xstate 문서의 네이밍 컨벤션을 따름
 type CREATE_OBJECT = {
   type: 'CREATE';
   data: Context;
@@ -23,6 +22,7 @@ type CREATE_OBJECT = {
 
 type DELETE_OBJECT = {
   type: 'DELETE';
+  data: Context;
 };
 
 export const buildCardMachine = createMachine(
@@ -45,7 +45,8 @@ export const buildCardMachine = createMachine(
       [machineState.created]: {
         on: {
           DELETE: {
-            target: machineState.deleted
+            target: machineState.deleted,
+            actions: 'delete'
           },
           CREATE: {
             target: machineState.created,
@@ -65,12 +66,11 @@ export const buildCardMachine = createMachine(
   },
   {
     actions: {
-      create: (_, event) => {
-        if (event.type === 'CREATE') {
-          const { original, translated, title, link } = event.data;
-          return { original, translated, title, link };
-        }
-      }
+      create: assign((_, event: CREATE_OBJECT | DELETE_OBJECT) => {
+        const { original, translated, title, link } = event.data;
+        return { original, translated, title, link };
+      }),
+      delete: assign((context, event: CREATE_OBJECT | DELETE_OBJECT) => ({}))
     }
   }
 );
