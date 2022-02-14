@@ -1,6 +1,6 @@
 import express from "express";
-import { getTranslate } from "../controllers";
+import { postTranslate } from "../controllers";
 
 export const translateRouter = express.Router();
 
-translateRouter.get("/", getTranslate);
+translateRouter.post("/", postTranslate);

@@ -15,7 +15,8 @@ async function speech(
       ssmlGender: "FEMALE",
     },
     audioConfig: {
-      audioEncoding: "MP3",
+      audioEncoding: "LINEAR16",
+      speakingRate: 1,
     },
   };
   try {
