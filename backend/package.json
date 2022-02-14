@@ -5,13 +5,14 @@
   "license": "MIT",
   "dependencies": {
     "@google-cloud/text-to-speech": "^3.4.0",
+    "amd-loader": "^0.0.8",
+    "dotenv": "^16.0.0",
     "express": "^4.17.2"
   },
   "scripts": {
     "dev": "nodemon src/server.ts",
     "build": "tsc",
-    "serve": "node dist/src/server.js",
-    "env": "export GOOGLE_APPLICATION_CREDENTIALS='./google_application.json'"
+    "serve": "node dist/src/server.js"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
