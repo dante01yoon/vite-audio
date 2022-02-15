@@ -5,7 +5,7 @@ export const useTTS = (text: string) => {
   const { isLoading, error, data, refetch } = useQuery(
     text,
     () =>
-      http.POST<ArrayBuffer[]>('translate', {
+      http.POST<ArrayBuffer[]>('tts', {
         responseType: 'arraybuffer',
         data: {
           text
