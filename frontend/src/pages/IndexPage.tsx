@@ -3,6 +3,7 @@ import { Translate, BlackButton, Icon, TextField } from '@components/index';
 import { useMachine } from '@xstate/react';
 import { buildCardMachine, translateMachine } from '../store/machines';
 import { useForm } from 'react-hook-form';
+import { useTTS } from '@/hooks';
 
 interface IndexPageProps {}
 
@@ -23,6 +24,7 @@ const IndexPage: FC<IndexPageProps> = () => {
     }
   });
   const { original, translated, title, link } = watch();
+  const ttsResponse = useTTS(original);
 
   const handleCreateCard = () => {
     sendBuilder({
@@ -45,19 +47,39 @@ const IndexPage: FC<IndexPageProps> = () => {
     });
   };
 
+  const handleListenTTS = async () => {
+    const { data: translated } = await ttsResponse.refetch({ cancelRefetch: true });
+    const audioContext = new AudioContext();
+    // TODO 타입 수정
+    const audioBuffer = await audioContext.decodeAudioData(translated as ArrayBuffer[][0]);
+    const source = audioContext.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(audioContext.destination);
+    source.start();
+  };
+
   return (
     <>
       <section className="flex gap-46">
         <article className="w-full">
-          <Translate register={register} name="original" maxLength={300} />
+          <Translate register={register} name="original" maxLength={300} languageFrom="en" />
           <BlackButton className="mt-[37px]" onClick={handleTranslate}>
             번역 꼬우
           </BlackButton>
         </article>
         <article className="w-full">
-          <Translate register={register} name="translated" readOnly languageFrom="en" />
+          <Translate register={register} name="translated" readOnly />
           <div className="mt-[37px]">
-            <Icon iconType="speaker" className="cursor-pointer inline-block" />
+            {!ttsResponse.isLoading ? (
+              <Icon
+                aria-disabled={false}
+                iconType="speaker"
+                className="cursor-pointer inline-block"
+                onClick={handleListenTTS}
+              />
+            ) : (
+              <div>로딩 중입니다.</div>
+            )}
           </div>
         </article>
       </section>

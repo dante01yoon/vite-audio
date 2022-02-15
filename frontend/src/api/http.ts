@@ -8,19 +8,18 @@ appAxiosClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-const request = async <T>(config: AxiosRequestConfig): Promise<AppResponse<T>> => {
+const request = async <T>(config: AxiosRequestConfig): Promise<T> => {
   try {
     const { data } = await appAxiosClient.request({ ...config });
-
-    return [data, null];
+    return data;
   } catch (error) {
     const { response } = error as unknown as AxiosError;
 
     if (response) {
-      throw [null, { status: response.status, data: response.data }];
+      throw { status: response.status, data: response.data };
     }
 
-    throw [null, error];
+    throw error;
   }
 };
 
