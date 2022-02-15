@@ -24,6 +24,39 @@ const addParams = (
   };
 };
 
+interface PapagoTranslatePayload {
+  message: {
+    "@type": "response";
+    "@service": "naverservice.nmt.proxy";
+    "@version": "1.0.0";
+    result: {
+      srcLangType: string;
+      tarLangType: string;
+      translatedText: string;
+      engineType: "N2MT";
+      pivot: null | string;
+    };
+  };
+}
+
+const adaptor = (responsePayload: PapagoTranslatePayload) => {
+  const {
+    message: {
+      result: {
+        srcLangType: source,
+        tarLangType: target,
+        translatedText: text,
+      },
+    },
+  } = responsePayload;
+
+  return {
+    source,
+    target,
+    text,
+  };
+};
+
 /**
  * 
  * @param req 
@@ -43,6 +76,12 @@ const addParams = (
     }
   }
  */
+
+/**
+  text: string;
+  source: string;
+  target: string;
+*/
 export const postTranslate = async (req, res) => {
   const { text, source = "en", target = "ko" } = req.body;
   try {
@@ -64,16 +103,15 @@ export const postTranslate = async (req, res) => {
       },
     });
     const translateContent = await response.json();
-    console.log("translateContent: ", translateContent);
 
-    res.send({ translateContent });
+    res.send(adaptor(translateContent));
   } catch (error) {
-    console.log(error);
     if (error instanceof PayloadError) {
       const { status, message } = error;
 
       return res.status(status).json({ message, status });
     }
+
     res.send(error);
   }
 };

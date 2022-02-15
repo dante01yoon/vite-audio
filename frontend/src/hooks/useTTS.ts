@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 
 export const useTTS = (text: string) => {
   const { isLoading, error, data, refetch } = useQuery(
-    text,
+    `tts/${text}`,
     () =>
       http.POST<ArrayBuffer[]>('tts', {
         responseType: 'arraybuffer',
