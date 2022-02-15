@@ -10,3 +10,6 @@ export const BackButton: FC<BackButtonProps> = ({ ...props }) => {
 		</button>
 	);
 };
+
+/* html button에 있는 속성 사용 가능!
+ex) <BackButton onClick={...} /> */

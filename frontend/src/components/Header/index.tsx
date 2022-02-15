@@ -11,3 +11,5 @@ export const Header: FC<HeaderProps> = ({ ...props }) => {
 		</header>
 	);
 };
+
+// 헤더 내용을 props.children으로 넣었으니까 <Header>제목</Header> 이렇게 쓰시면 돼요! 
