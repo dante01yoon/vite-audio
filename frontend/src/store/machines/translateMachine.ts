@@ -1,3 +1,5 @@
+import { http } from '@/api';
+import type { TranslatePayload } from '@/hooks';
 import { createMachine, assign } from 'xstate';
 
 const machineState = {
@@ -7,9 +9,11 @@ const machineState = {
 };
 
 interface Context {
-  original?: string;
+  original: string;
   translated?: string;
   audio?: string;
+  source?: string;
+  target?: string;
 }
 
 type TRANSLATE = {
@@ -18,14 +22,29 @@ type TRANSLATE = {
 };
 
 // fetch 이후 normalize 해야 함
-const fetchTranslate = (context: Context): Promise<TRANSLATE['data']> => {
-  return Promise.resolve({ original: '', translated: 'translated complete', audio: '' });
+const fetchTranslate = async (_: Context, events: TRANSLATE): Promise<TRANSLATE['data']> => {
+  const { original: text, target = 'ko', source = 'en' } = events.data;
+  // TODO
+  // @ts-ignore
+  const response: TranslatePayload = await http.POST<TranslatePayload>('translate', {
+    data: {
+      text,
+      source,
+      target
+    }
+  });
+  return {
+    original: text,
+    translated: response.text,
+    source,
+    target
+  };
 };
 
 export const translateMachine = createMachine(
   {
     id: 'translate',
-    initial: machineState.loading,
+    initial: machineState.resolved,
     schema: {
       context: {} as Context, // as는 xstate에서 권장함
       events: {} as TRANSLATE
@@ -44,7 +63,9 @@ export const translateMachine = createMachine(
       },
       [machineState.resolved]: {
         on: {
-          TRANSLATE: machineState.loading
+          TRANSLATE: {
+            target: machineState.loading
+          }
         }
       },
       [machineState.rejected]: {

@@ -48,10 +48,10 @@ const IndexPage: FC<IndexPageProps> = () => {
   };
 
   const handleListenTTS = async () => {
-    const { data: translated } = await ttsResponse.refetch({ cancelRefetch: true });
+    const { data: tts } = await ttsResponse.refetch({ cancelRefetch: true });
     const audioContext = new AudioContext();
     // TODO 타입 수정
-    const audioBuffer = await audioContext.decodeAudioData(translated as ArrayBuffer[][0]);
+    const audioBuffer = await audioContext.decodeAudioData(tts as ArrayBuffer[][0]);
     const source = audioContext.createBufferSource();
     source.buffer = audioBuffer;
     source.connect(audioContext.destination);
@@ -68,7 +68,12 @@ const IndexPage: FC<IndexPageProps> = () => {
           </BlackButton>
         </article>
         <article className="w-full">
-          <Translate register={register} name="translated" readOnly />
+          <Translate
+            register={register}
+            name="translated"
+            value={translator.context.translated}
+            readOnly
+          />
           <div className="mt-[37px]">
             {!ttsResponse.isLoading ? (
               <Icon

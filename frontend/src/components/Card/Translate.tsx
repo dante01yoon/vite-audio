@@ -3,7 +3,7 @@ import { TextBox, TextBoxProps } from '..';
 import { getLanguage } from '@utils/.';
 import cs from 'classnames';
 import { omit } from 'rambda';
-export interface TranslateProps extends Pick<TextBoxProps, 'readOnly'> {
+export interface TranslateProps extends Pick<TextBoxProps, 'readOnly' | 'value'> {
   name: string;
   register: (param: any) => void;
   minLength?: number;
@@ -22,7 +22,7 @@ export const Translate: FC<TranslateProps> = ({
   ...props
 }) => {
   const [language] = useState(getLanguage(languageFrom));
-  const { name, minLength, maxLength } = props;
+  const { name, minLength, maxLength, value } = props;
 
   return (
     <div
@@ -35,6 +35,7 @@ export const Translate: FC<TranslateProps> = ({
         minLength={minLength}
         maxLength={maxLength}
         register={register}
+        value={value}
       />
     </div>
   );

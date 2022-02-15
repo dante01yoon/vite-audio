@@ -19,11 +19,9 @@ export const textTranslate = async (
     model: "nmt",
   };
   try {
-    console.log("text: ", text);
     let [translations] = await translate(text, options);
     return translations;
   } catch (error) {
-    console.log("error: ", error);
     return Promise.reject(error);
   }
 };

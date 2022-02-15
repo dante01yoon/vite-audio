@@ -1,7 +1,7 @@
-import { FC } from 'react';
+import { FC, HTMLAttributes } from 'react';
 import { useForm } from 'react-hook-form';
 import cs from 'classnames';
-export interface TextBoxProps {
+export interface TextBoxProps extends HTMLAttributes<HTMLInputElement> {
   name: string;
   minLength?: number;
   maxLength?: number;
