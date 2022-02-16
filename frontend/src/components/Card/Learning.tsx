@@ -11,16 +11,16 @@ export interface LearningProps {
 
 const styleMap = {
   bg: (imgSrc?: string) => ({ [`bg-[url('${imgSrc}')]`]: true, 'rounded-[50%]': true }),
-  border: (toggle: boolean = false) => toggle ? 'border-cyan-700' : 'border-transparent'
+  border: (toggle: boolean = false) => toggle ? 'border-cardBorder' : 'border-border2'
 };
 
 export const Learning: FC<LearningProps> = ({ title, text, clickHandler, imgSrc, toggle }) => {
   return (
-    <div onClick={clickHandler} className={`text-[0.75rem] p-[16px] flex items-center gap-[12px] cmp-learning-card rounded-[8px] border-[1px] border-solid ${styleMap.border(toggle)}`}>
-      <div className={`${cs(styleMap.bg(imgSrc))} w-[48px] aspect-square bg-cover bg-no-repeat`} />
+    <div onClick={clickHandler} className={`cursor-pointer text-[0.75rem] p-[16px] flex items-center gap-[12px] cmp-learning-card rounded-[8px] border-[1px] border-solid ${styleMap.border(toggle)}`}>
+      <img src={imgSrc} className='w-[48px] aspect-square object-cover rounded-[50%]' />
       <div className='flex flex-col flex-nowrap gap-[8px]'>
         <div className={'font-bold'}>{title}</div>
-        <div className="text-ellipsis overflow-hidden decoration-cardText">
+        <div className="text-ellipsis overflow-hidden text-text2">
           {text}
         </div>
       </div>

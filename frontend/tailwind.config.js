@@ -13,7 +13,13 @@ module.exports = {
       },
       colors: {
         cardText: '#756d6d',
-        cardBorder: '#153dca'
+        cardBorder: '#153dca',
+        // text1: '#000000',
+        text2: '#756D6D',
+        // border1: '#153DCA',
+        border2: '#153DCA30',
+        background1: '#ffffff',
+        button1: '#000000'
       }
     }
   },
