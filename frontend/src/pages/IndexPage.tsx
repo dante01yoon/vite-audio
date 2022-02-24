@@ -4,13 +4,23 @@ import { useMachine } from '@xstate/react';
 import { buildCardMachine, translateMachine } from '../store/machines';
 import { useForm } from 'react-hook-form';
 import { useTTS } from '@/hooks';
+import { useNavigate } from 'react-router-dom';
 
 interface IndexPageProps {}
 
 const IndexPage: FC<IndexPageProps> = () => {
-  const [builder, sendBuilder] = useMachine(buildCardMachine);
+  const navigate = useNavigate();
+  /**
+   * @see https://xstate.js.org/docs/recipes/react.html#other-hooks
+   */
+  const [builder, sendBuilder] = useMachine(buildCardMachine, {
+    actions: {
+      goToAudioPage: () => {
+        navigate('audio');
+      }
+    }
+  });
   const [translator, sendTranslator] = useMachine(translateMachine);
-
   const {
     register,
     formState: { errors },

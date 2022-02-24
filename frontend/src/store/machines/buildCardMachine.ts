@@ -52,7 +52,8 @@ export const buildCardMachine = createMachine(
             target: machineState.created,
             actions: 'create'
           }
-        }
+        },
+        entry: 'goToAudioPage'
       },
       [machineState.deleted]: {
         on: {
