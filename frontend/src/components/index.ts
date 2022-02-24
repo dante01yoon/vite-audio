@@ -3,3 +3,4 @@ export * from './Card/Translate';
 export * from './Buttons';
 export * from './Icon';
 export * from './Field';
+export * from './Container';
