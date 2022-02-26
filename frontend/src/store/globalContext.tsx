@@ -1,9 +1,11 @@
 import { createContext } from 'react';
 import { useInterpret } from '@xstate/react';
-import { authMachine } from './machines';
+import { authMachine, modalMachine } from './machines';
+import { ActorRefFrom } from 'xstate';
 
 export type GlobalContextType = {
-  authService: {};
+  authService: ActorRefFrom<typeof authMachine>;
+  modalService: ActorRefFrom<typeof modalMachine>;
 };
 
 export const GlobalContext = createContext({} as GlobalContextType);
@@ -13,8 +15,10 @@ export const GlobalContext = createContext({} as GlobalContextType);
  */
 export const XStateProvider: React.FC = ({ children }) => {
   const authService = useInterpret(authMachine);
+  const modalService = useInterpret(modalMachine);
   const service = {
-    authService
+    authService,
+    modalService
   };
 
   return <GlobalContext.Provider value={service}>{children}</GlobalContext.Provider>;
