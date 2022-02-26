@@ -14,16 +14,31 @@ export const Icon: FC<IconProps> = ({
   className,
   ...props
 }) => {
+  const ext =
+    true &&
+    (function (type) {
+      switch (iconMap[type].split('.')[1]) {
+        case 'svg':
+          return 'svg+xml';
+        case 'png':
+          return 'png';
+        default:
+          return 'jpg';
+      }
+    })(iconType);
+
   return (
-    <a href="#" onClick={onClick} className={className}>
-      <object
-        type="image/svg+xml"
-        {...props}
-        className="pointer-events-none"
-        data={`/assets/icons/${iconMap[iconType]}`}
-        width={width}
-        height={height}
-      />
+    <a href="#" onClick={onClick} className={`${className} inline-block`}>
+      {
+        <object
+          type={`image/${ext}`}
+          {...props}
+          className="pointer-events-none"
+          data={`/assets/icons/${iconMap[iconType]}`}
+          width={width}
+          height={height}
+        />
+      }
     </a>
   );
 };
