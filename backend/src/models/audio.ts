@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 
 export const audioSchema = new Schema({
   id: String,
@@ -13,3 +13,5 @@ export const audioSchema = new Schema({
     audio: Buffer,
   },
 });
+
+export const Audio = model("Audio", audioSchema);
