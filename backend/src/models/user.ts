@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 // FIXME aws s3
 const root = "/"; // s3
@@ -6,9 +6,10 @@ const root = "/"; // s3
 export const userSchema = new Schema({
   id: {
     type: String,
-    default: Schema.Types.ObjectId,
+    default: Types.ObjectId,
   },
   name: String,
+  password: String,
   image: {
     type: String,
     // see https://mongoosejs.com/docs/schematypes.html#getters

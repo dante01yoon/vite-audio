@@ -1,10 +1,10 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 import { audioSchema } from ".";
 
 export const cardSchema = new Schema({
   id: {
     type: String,
-    default: Schema.Types.ObjectId,
+    default: Types.ObjectId,
   },
   title: String,
   image: {
