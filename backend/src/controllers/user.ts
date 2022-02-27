@@ -12,12 +12,12 @@ export const register = async (req: Request, res: Response, next) => {
   }
 
   try {
-    const isExistUser = await User.findOne({ name: id });
-    if (isExistUser) {
-      return res.status(400).json({
-        message: "user is already exist",
-      });
-    }
+    // const isExistUser = await User.findOne({ name: id });
+    // if (isExistUser) {
+    //   return res.status(400).json({
+    //     message: "user is already exist",
+    //   });
+    // }
 
     const session = await User.create({
       name: id,
@@ -26,8 +26,12 @@ export const register = async (req: Request, res: Response, next) => {
     req.body.session = session;
     next();
   } catch (error) {
-    res.status(500);
-    res.end();
+    if (error.message.indexOf("duplicate key error") !== -1) {
+      res.status(400).json({ message: "this id can't be use" });
+    } else {
+      res.status(500);
+      res.end();
+    }
   }
 };
 

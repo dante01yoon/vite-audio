@@ -8,7 +8,10 @@ export const userSchema = new Schema({
     type: String,
     default: Types.ObjectId,
   },
-  name: String,
+  name: {
+    type: String,
+    unique: true,
+  },
   password: String,
   image: {
     type: String,
