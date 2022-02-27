@@ -1,11 +1,12 @@
 import { createContext } from 'react';
 import { useInterpret } from '@xstate/react';
-import { authMachine, modalMachine } from './machines';
-import { ActorRefFrom } from 'xstate';
+import { authMachine, ModalContext, ModalEvent, modalMachine } from './machines';
+import { ActorRefFrom, Interpreter } from 'xstate';
 
 export type GlobalContextType = {
   authService: ActorRefFrom<typeof authMachine>;
-  modalService: ActorRefFrom<typeof modalMachine>;
+  // see https://github.com/statelyai/xstate/discussions/1761
+  modalService: ActorRefFrom<Interpreter<ModalContext, any, ModalEvent>['machine']>;
 };
 
 export const GlobalContext = createContext({} as GlobalContextType);

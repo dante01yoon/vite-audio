@@ -1,4 +1,5 @@
-import { createMachine, send } from 'xstate';
+import { type } from 'os';
+import { createMachine, send, assign } from 'xstate';
 
 const modalState = {
   closed: 'closed',
@@ -6,31 +7,59 @@ const modalState = {
   opened: 'opened'
 };
 
-export const modalMachine = createMachine({
-  id: 'modal',
-  initial: 'closed',
-  states: {
-    [modalState.closed]: {
-      on: {
-        OPEN: {
-          target: modalState.opening
-        }
-      }
+export interface ModalContext {
+  type?: 'signIn' | 'signUp';
+}
+
+export interface ModalEvent {
+  type: 'OPEN' | 'CLOSE';
+  data?: ModalContext;
+}
+
+export const modalMachine = createMachine(
+  {
+    id: 'modal',
+    initial: modalState.closed,
+    schema: {
+      context: {} as ModalContext,
+      events: {} as ModalEvent
     },
-    [modalState.opened]: {
-      on: {
-        CLOSE: {
-          target: modalState.closed
-        }
-      }
-    },
-    [modalState.opening]: {
-      on: {
-        OPEN: {
-          target: modalState.opened
+    states: {
+      [modalState.closed]: {
+        on: {
+          OPEN: {
+            target: modalState.opening,
+            actions: ['open_action']
+          }
         }
       },
-      entry: send('OPEN')
+      [modalState.opened]: {
+        on: {
+          CLOSE: {
+            target: modalState.closed
+          },
+          OPEN: {
+            target: modalState.opened,
+            actions: ['open_action']
+          }
+        }
+      },
+      [modalState.opening]: {
+        on: {
+          OPEN: {
+            target: modalState.opened,
+            actions: ['open_action']
+          }
+        },
+        entry: send('OPEN')
+      }
+    }
+  },
+  {
+    actions: {
+      open_action: assign((context: ModalContext, event: ModalEvent) => {
+        return { type: event.data?.type ?? context.type };
+      })
     }
   }
-});
+);

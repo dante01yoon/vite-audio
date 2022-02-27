@@ -1,5 +1,10 @@
 .vite_auth_modal {
   input {
+    width: 300px;
     border: 1px solid #20306196;
+  }
+
+  label {
+    display: block;
   }
 }

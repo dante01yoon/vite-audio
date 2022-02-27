@@ -43,7 +43,12 @@ const IndexPage: FC<IndexPageProps> = () => {
     if (authState.matches('login')) {
       next();
     } else {
-      sendModalState({ type: 'OPEN' });
+      sendModalState({
+        type: 'OPEN',
+        data: {
+          type: 'signIn'
+        }
+      });
     }
   };
 
