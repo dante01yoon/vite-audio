@@ -4,7 +4,7 @@ import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { BlackButton, Icon, TextField } from '..';
 
-export const AuthModal: FC = ({}) => {
+export const SignUpModal = () => {
   const { register } = useForm();
   const { modalService } = useAppContext();
   const [_, modalSend] = useActor(modalService);
@@ -15,16 +15,16 @@ export const AuthModal: FC = ({}) => {
     });
   };
 
-  const handleLogin = () => {};
-
-  const handleSignUp = () => {
+  const handleLogin = () => {
     modalSend({
       type: 'OPEN',
       data: {
-        type: 'signUp'
+        type: 'signIn'
       }
     });
   };
+
+  const handleSignUp = () => {};
 
   return (
     <div
@@ -37,7 +37,7 @@ export const AuthModal: FC = ({}) => {
         width={'30px'}
         height={'30px'}
       />
-      <div className="text-center">로그인이 필요한 서비스 입니다</div>
+      <div className="text-center">신규 회원 가입</div>
       <TextField
         header="ID"
         register={register}
@@ -55,11 +55,19 @@ export const AuthModal: FC = ({}) => {
         required
         className="mt-3"
       />
-      <BlackButton className="mt-3" onClick={handleLogin}>
-        로그인
-      </BlackButton>
+      <TextField
+        header="PASSWORD CONFIRM"
+        register={register}
+        name="passwordAgain"
+        type="password"
+        required
+        className="mt-3"
+      />
       <BlackButton className="mt-3" onClick={handleSignUp}>
         회원가입
+      </BlackButton>
+      <BlackButton className="mt-3" onClick={handleLogin}>
+        가입 계정이 존재함
       </BlackButton>
     </div>
   );
