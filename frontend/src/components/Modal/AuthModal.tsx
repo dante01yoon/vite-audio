@@ -1,3 +1,4 @@
+import { http } from '@/api';
 import { useAppContext } from '@/hooks';
 import { useActor } from '@xstate/react';
 import { FC } from 'react';
@@ -15,7 +16,14 @@ export const AuthModal: FC = ({}) => {
     });
   };
 
-  const handleLogin = () => {};
+  const handleLogin = async () => {
+    const response = await http.POST('/user/signIn', {
+      data: {
+        id: 'admin',
+        password: '123412341234'
+      }
+    });
+  };
 
   const handleSignUp = () => {
     modalSend({

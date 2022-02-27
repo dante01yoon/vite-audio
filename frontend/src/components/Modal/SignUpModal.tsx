@@ -1,3 +1,4 @@
+import { http } from '@/api';
 import { useAppContext } from '@/hooks';
 import { useActor } from '@xstate/react';
 import { FC } from 'react';
@@ -24,7 +25,15 @@ export const SignUpModal = () => {
     });
   };
 
-  const handleSignUp = () => {};
+  const handleSignUp = async () => {
+    const response = await http.POST('/user/signUp', {
+      data: {
+        id: 'admin',
+        password: '123412341234',
+        passwordConfirm: '123412341234'
+      }
+    });
+  };
 
   return (
     <div

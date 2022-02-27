@@ -12,7 +12,6 @@ export const authSign = (req: Request, res: Response, next) => {
     },
     process.env.AUTH_SECRET
   );
-  console.log("token: ", token);
   res.header("Authorization", setBearerHeader(token));
   res.status(200).json({
     user: req.body.session,

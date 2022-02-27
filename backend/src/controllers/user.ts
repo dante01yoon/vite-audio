@@ -4,7 +4,7 @@ import { AuthError } from "../response";
 
 export const register = async (req: Request, res: Response, next) => {
   const { id, password, passwordConfirm } = req.body;
-  console.log(req.body);
+
   if (password !== passwordConfirm) {
     return res.status(400).json({
       message: "passsword,passwordConfirm is not match",
@@ -38,7 +38,6 @@ export const login = async (req: Request, res: Response, next) => {
     if (!session) {
       return res.status(400);
     } else {
-      console.log("session: ", session);
       if (session.password === password) {
         req.body.session = session;
         return next();

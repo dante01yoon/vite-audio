@@ -2,11 +2,33 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 type AppResponse<T> = [AxiosResponse<T>, AxiosError | null];
 
+const getToken = () => {
+  return localStorage.getItem('vite_audio_session');
+};
+
+const setToken = (token: string, reset?: true) => {
+  if (reset) {
+    return localStorage.removeItem('vite_audio_session');
+  }
+
+  return localStorage.setItem('vite_audio_session', token);
+};
+
 const appAxiosClient = axios.create({ baseURL: '/api/', withCredentials: true });
 appAxiosClient.interceptors.request.use(
   (config) => config,
   (error) => Promise.reject(error)
 );
+appAxiosClient.interceptors.response.use((response) => {
+  if (response.config.url === '/user/signIn') {
+    if (response.status === 200) {
+      setToken(response.headers.authorization.split('Bearer')[1].trim());
+    } else {
+      setToken('', true);
+    }
+  }
+});
+appAxiosClient.defaults.headers.common = { Authorization: `Bearer ${getToken()}` };
 
 const request = async <T>(config: AxiosRequestConfig): Promise<T> => {
   try {
