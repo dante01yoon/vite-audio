@@ -22,9 +22,10 @@ export const authChecker = async (req: Request, res: Response, next) => {
   try {
     if (req.headers.authorization) {
       const token = req.headers.authorization.split("Bearer ")[1];
+      const session = jwt.verify(token, process.env.AUTH_SECRET);
+      req.body.session = session;
 
-      const authInfo = jwt.verify(token, process.env.AUTH_SECRET);
-      req.body.authInfo = authInfo;
+      return next();
     } else {
       throw new AuthError("token is invalid", 401);
     }
@@ -35,5 +36,6 @@ export const authChecker = async (req: Request, res: Response, next) => {
       });
     }
     res.status(401);
+    res.end();
   }
 };

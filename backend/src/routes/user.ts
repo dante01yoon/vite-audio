@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { authSign } from "../middleware";
-import { login, register } from "../controllers";
+import { authChecker, authSign } from "../middleware";
+import { login, register, me } from "../controllers";
 
 export const userRouter = Router();
+
+userRouter.post("/me", authChecker, me);
 
 userRouter.post("/signUp", register, authSign);
 

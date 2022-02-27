@@ -40,7 +40,7 @@ const IndexPage: FC<IndexPageProps> = () => {
   const ttsResponse = useTTS(original);
 
   const protectedHandler = (next: () => void) => () => {
-    if (authState.matches('login')) {
+    if (authState.matches('signedIn')) {
       next();
     } else {
       sendModalState({

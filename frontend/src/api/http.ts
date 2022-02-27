@@ -16,7 +16,13 @@ const setToken = (token: string, reset?: true) => {
 
 const appAxiosClient = axios.create({ baseURL: '/api/', withCredentials: true });
 appAxiosClient.interceptors.request.use(
-  (config) => config,
+  (config) => {
+    if (config.headers) {
+      config.headers.Authorization = `Bearer ${getToken()}`;
+    }
+
+    return config;
+  },
   (error) => Promise.reject(error)
 );
 appAxiosClient.interceptors.response.use((response) => {
@@ -26,13 +32,14 @@ appAxiosClient.interceptors.response.use((response) => {
     } else {
       setToken('', true);
     }
+    window.location.replace('/');
   }
+  return response;
 });
-appAxiosClient.defaults.headers.common = { Authorization: `Bearer ${getToken()}` };
 
 const request = async <T>(config: AxiosRequestConfig): Promise<T> => {
   try {
-    const { data } = await appAxiosClient.request({ ...config });
+    const { data } = await appAxiosClient.request<T>({ ...config });
     return data;
   } catch (error) {
     const { response } = error as unknown as AxiosError;
@@ -45,28 +52,19 @@ const request = async <T>(config: AxiosRequestConfig): Promise<T> => {
   }
 };
 
-function GET<T>(url: string, config?: Omit<AxiosRequestConfig, 'url'>): ReturnType<typeof request> {
+function GET<T>(url: string, config?: Omit<AxiosRequestConfig, 'url'>): Promise<T> {
   return request<T>({ ...config, method: 'GET', url });
 }
 
-async function PUT<T>(
-  url: string,
-  config?: Omit<AxiosRequestConfig, 'url'>
-): ReturnType<typeof request> {
+async function PUT<T>(url: string, config?: Omit<AxiosRequestConfig, 'url'>): Promise<T> {
   return request<T>({ ...config, method: 'PUT', url });
 }
 
-async function POST<T>(
-  url: string,
-  config?: Omit<AxiosRequestConfig, 'url'>
-): ReturnType<typeof request> {
+async function POST<T>(url: string, config?: Omit<AxiosRequestConfig, 'url'>): Promise<T> {
   return request<T>({ ...config, method: 'POST', url });
 }
 
-async function DELETE<T>(
-  url: string,
-  config?: Omit<AxiosRequestConfig, 'url'>
-): ReturnType<typeof request> {
+async function DELETE<T>(url: string, config?: Omit<AxiosRequestConfig, 'url'>): Promise<T> {
   return request<T>({ ...config, method: 'DELETE', url });
 }
 

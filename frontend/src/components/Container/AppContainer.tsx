@@ -1,11 +1,17 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useAppContext } from '@hooks/.';
 import { useActor } from '@xstate/react';
 import { AuthModal, SignUpModal } from '..';
 
 export const AppContainer: FC = ({ children }) => {
-  const { modalService } = useAppContext();
+  const { modalService, authService } = useAppContext();
   const [modalState] = useActor(modalService);
+  const [authState, sendAuthState] = useActor(authService);
+
+  useEffect(() => {
+    sendAuthState('SIGNME');
+  }, []);
+
   const modal = (function (type) {
     switch (type) {
       case 'signIn':

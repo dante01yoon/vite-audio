@@ -8,8 +8,9 @@ import { BlackButton, ErrorField, Icon, TextField } from '..';
 export const AuthModal: FC = ({}) => {
   const { register, handleSubmit, formState, getValues } = useForm({});
   const { errors } = formState;
-  const { modalService } = useAppContext();
+  const { modalService, authService } = useAppContext();
   const [_, modalSend] = useActor(modalService);
+  const [auth, authSend] = useActor(authService);
 
   const handleClose = () => {
     modalSend({
@@ -26,12 +27,19 @@ export const AuthModal: FC = ({}) => {
 
   const handleLogin = async () => {
     if (isValidField('id') && isValidField('password')) {
-      const response = await http.POST('/user/signIn', {
+      authSend({
+        type: 'SIGNIN',
         data: {
           id: getValues('id'),
           password: getValues('password')
         }
       });
+      // const response = await http.POST('/user/signIn', {
+      //   data: {
+      //     id: getValues('id'),
+      //     password: getValues('password')
+      //   }
+      // });
     }
   };
 

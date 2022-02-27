@@ -2,6 +2,11 @@ import { Request, Response } from "express";
 import { User } from "../models";
 import { AuthError } from "../response";
 
+export const me = async (req: Request, res: Response, next) => {
+  const session = req.body.session;
+  res.status(200).json({ user: session });
+};
+
 export const register = async (req: Request, res: Response, next) => {
   const { id, password, passwordConfirm } = req.body;
 
@@ -12,13 +17,6 @@ export const register = async (req: Request, res: Response, next) => {
   }
 
   try {
-    // const isExistUser = await User.findOne({ name: id });
-    // if (isExistUser) {
-    //   return res.status(400).json({
-    //     message: "user is already exist",
-    //   });
-    // }
-
     const session = await User.create({
       name: id,
       password,
@@ -52,7 +50,6 @@ export const login = async (req: Request, res: Response, next) => {
       throw new AuthError("", 401);
     }
   } catch (error) {
-    console.log(error);
     if (error.status === 401) {
       res.status(401);
       res.end();
