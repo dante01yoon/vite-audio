@@ -2,7 +2,11 @@ import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { connectDB } from "./utils";
-import { translateRouter as translate, ttsRouter as tts } from "./routes";
+import {
+  translateRouter as translate,
+  ttsRouter as tts,
+  userRouter as user,
+} from "./routes";
 import "./utils/fetch-polyfills";
 import { authChecker } from "./middleware";
 
@@ -15,6 +19,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use("/user", user);
 app.use("/translate", authChecker, translate);
 app.use("/tts", authChecker, tts);
 connectDB(() => console.log("db is connected"));

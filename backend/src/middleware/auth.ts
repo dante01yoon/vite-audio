@@ -7,13 +7,16 @@ const setBearerHeader = (token: string) => `Bearer ${token}`;
 export const authSign = (req: Request, res: Response, next) => {
   const token = jwt.sign(
     {
+      user: req.body.session,
       exp: ~~(Date.now() / 1000 + 60 * 60 * 9),
     },
     process.env.AUTH_SECRET
   );
-
+  console.log("token: ", token);
   res.header("Authorization", setBearerHeader(token));
-  res.send(200);
+  res.status(200).json({
+    user: req.body.session,
+  });
 };
 
 export const authChecker = async (req: Request, res: Response, next) => {
