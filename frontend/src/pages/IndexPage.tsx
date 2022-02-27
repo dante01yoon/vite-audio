@@ -1,16 +1,29 @@
 import { FC } from 'react';
 import { Translate, BlackButton, Icon, TextField } from '@components/index';
-import { useMachine } from '@xstate/react';
+import { useActor, useMachine } from '@xstate/react';
 import { buildCardMachine, translateMachine } from '../store/machines';
 import { useForm } from 'react-hook-form';
-import { useTTS } from '@/hooks';
+import { useAppContext, useTTS } from '@/hooks';
+import { useNavigate } from 'react-router-dom';
 
 interface IndexPageProps {}
 
 const IndexPage: FC<IndexPageProps> = () => {
-  const [builder, sendBuilder] = useMachine(buildCardMachine);
+  const navigate = useNavigate();
+  /**
+   * @see https://xstate.js.org/docs/recipes/react.html#other-hooks
+   */
+  const [builder, sendBuilder] = useMachine(buildCardMachine, {
+    actions: {
+      goToAudioPage: () => {
+        navigate('audio');
+      }
+    }
+  });
   const [translator, sendTranslator] = useMachine(translateMachine);
-
+  const { authService, modalService } = useAppContext();
+  const [authState, sendAuthState] = useActor(authService);
+  const [_, sendModalState] = useActor(modalService);
   const {
     register,
     formState: { errors },
@@ -25,6 +38,19 @@ const IndexPage: FC<IndexPageProps> = () => {
   });
   const { original, translated, title, link } = watch();
   const ttsResponse = useTTS(original);
+
+  const protectedHandler = (next: () => void) => () => {
+    if (authState.matches('signedIn')) {
+      next();
+    } else {
+      sendModalState({
+        type: 'OPEN',
+        data: {
+          type: 'signIn'
+        }
+      });
+    }
+  };
 
   const handleCreateCard = () => {
     sendBuilder({
@@ -63,7 +89,7 @@ const IndexPage: FC<IndexPageProps> = () => {
       <section className="flex gap-46">
         <article className="w-full">
           <Translate register={register} name="original" maxLength={300} languageFrom="en" />
-          <BlackButton className="mt-[37px]" onClick={handleTranslate}>
+          <BlackButton className="mt-[37px]" onClick={protectedHandler(handleTranslate)}>
             번역 꼬우
           </BlackButton>
         </article>
@@ -80,7 +106,7 @@ const IndexPage: FC<IndexPageProps> = () => {
                 aria-disabled={false}
                 iconType="speaker"
                 className="cursor-pointer inline-block"
-                onClick={handleListenTTS}
+                onClick={protectedHandler(handleListenTTS)}
               />
             ) : (
               <div>로딩 중입니다.</div>
@@ -104,7 +130,7 @@ const IndexPage: FC<IndexPageProps> = () => {
               />
               {errors.link && <div>링크를 정확히 입력해주세요</div>}
             </div>
-            <BlackButton className="max-w-[577px]" onClick={handleCreateCard}>
+            <BlackButton className="max-w-[577px]" onClick={protectedHandler(handleCreateCard)}>
               카드 생성 꼬우
             </BlackButton>
           </div>

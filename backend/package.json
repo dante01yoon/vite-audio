@@ -7,8 +7,12 @@
     "@google-cloud/text-to-speech": "^3.4.0",
     "@google-cloud/translate": "^6.3.1",
     "amd-loader": "^0.0.8",
+    "async": "^3.2.3",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
+    "luxon": "^2.3.1",
+    "mongoose": "^6.2.3",
     "node-fetch": "2"
   },
   "scripts": {

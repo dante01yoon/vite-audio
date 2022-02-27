@@ -1,3 +1,4 @@
 export const iconMap = {
-  speaker: 'speaker.svg'
+  speaker: 'speaker.svg',
+  close: 'close.png'
 };
