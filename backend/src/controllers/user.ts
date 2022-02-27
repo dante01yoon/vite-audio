@@ -27,6 +27,7 @@ export const register = async (req: Request, res: Response, next) => {
     next();
   } catch (error) {
     res.status(500);
+    res.end();
   }
 };
 
@@ -36,7 +37,8 @@ export const login = async (req: Request, res: Response, next) => {
     const session = await User.findOne({ name: id });
 
     if (!session) {
-      return res.status(400);
+      res.status(401);
+      res.end();
     } else {
       if (session.password === password) {
         req.body.session = session;
@@ -46,10 +48,13 @@ export const login = async (req: Request, res: Response, next) => {
       throw new AuthError("", 401);
     }
   } catch (error) {
+    console.log(error);
     if (error.status === 401) {
       res.status(401);
+      res.end();
     } else {
       res.status(500);
+      res.end();
     }
   }
 };
