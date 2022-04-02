@@ -18,8 +18,8 @@
 - [x] typescript
 - [x] docker-compose
 - [x] docker
-- [] s3
-- [] AWS bean stalk
+- [ ] s3
+- [ ] AWS bean stalk
 
 ## install & run
 
