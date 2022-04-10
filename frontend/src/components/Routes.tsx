@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import { AppContainer } from '@components/index';
 import { useAppContext } from '@hooks/index';
 import { useActor } from '@xstate/react';
+import Toast, { ToastContainer } from '@components/Toast';
 
 interface AppRoutes {
   path: string;
@@ -21,7 +22,6 @@ const AppRoutes: FC = () => {
   const [toastState, toastSend] = useActor(toastService);
   const [authState, authSend] = useActor(authService);
   console.log('toastState: ', toastState);
-  console.log('authState: ', authState);
   return (
     <AppContainer>
       <Routes>
@@ -29,7 +29,11 @@ const AppRoutes: FC = () => {
           return <Route key={path} path={path} element={<Component />} />;
         })}
       </Routes>
-      {}
+      <ToastContainer>
+        {toastState.context.toasts.map(({ id, title, jsx }) => {
+          <Toast id={id} title={title} description={jsx} />;
+        })}
+      </ToastContainer>
     </AppContainer>
   );
 };

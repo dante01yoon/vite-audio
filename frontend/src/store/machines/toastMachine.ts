@@ -21,14 +21,18 @@ export type ToastEvent =
       type: 'CLOSE';
     };
 
-export interface ToastContext {
+interface SingleToast {
   id: string;
   jsx: JSX.Element | null;
-  title: string;
   manualClose?: boolean;
-  timeout?: number;
+  title?: string;
   hasFetch?: string;
+}
+
+export interface ToastContext {
+  timeout?: number;
   sleepTime?: number;
+  toasts: SingleToast[];
 }
 
 const sleep = (ms: number = 3000) =>
@@ -58,7 +62,9 @@ const createToastMachine = () => {
     {
       tsTypes: {} as import('./toastMachine.typegen').Typegen0,
       schema: {
-        context: {} as ToastContext,
+        context: {
+          toasts: []
+        } as ToastContext,
         events: {} as ToastEvent
       },
       id: 'toast',
