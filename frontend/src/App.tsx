@@ -4,10 +4,11 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter } from 'react-router-dom';
 import '../styles/global.scss';
 import { XStateProvider } from './store';
-
+import { useAppContext } from './hooks';
 const queryClient = new QueryClient();
 
 function App() {
+  const {} = useAppContext();
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>

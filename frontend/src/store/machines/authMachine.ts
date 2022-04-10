@@ -10,45 +10,53 @@ const machineState = {
   rejected: 'rejected'
 };
 
-interface AuthContext {
+export interface AuthContext {
   session: any;
 }
 
-interface SignUpEvent {
+export type AuthEvent =
+  | SignUpEvent
+  | SignOutEvent
+  | SignInEvent
+  | SignedInEvent
+  | SignedOutEvent
+  | SignMeEvent;
+
+type SignUpEvent = {
   type: 'SIGNUP';
   data: {
     id: string;
     password: string;
     passwordConfirm: string;
   };
-}
+};
 
-interface SignOutEvent {
+type SignOutEvent = {
   type: 'SIGNOUT';
-}
+};
 
-interface SignInEvent {
+type SignInEvent = {
   type: 'SIGNIN';
   data: {
     id: string;
     password: string;
   };
-}
+};
 
-interface SignedInEvent {
+type SignedInEvent = {
   type: 'SIGNEDIN';
   data: {
     session: User;
   };
-}
+};
 
-interface SignedOutEvent {
+type SignedOutEvent = {
   type: 'SIGNEDOUT';
-}
+};
 
-interface SignMeEvent {
+type SignMeEvent = {
   type: 'SIGNME';
-}
+};
 
 const fetchSignIn = async (data: SignInEvent['data']) => {
   const response = await http.POST<{ user: User }>('/user/signIn', {
@@ -90,9 +98,11 @@ const fetchSignMe = async () => {
 
 export const authMachine = createMachine(
   {
+    tsTypes: {} as import('./authMachine.typegen').Typegen0,
     initial: machineState.signedOut,
     schema: {
-      context: {} as AuthContext
+      context: {} as AuthContext,
+      events: {} as AuthEvent
     },
     states: {
       [machineState.signedIn]: {
