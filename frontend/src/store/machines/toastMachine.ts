@@ -62,10 +62,11 @@ const createToastMachine = () => {
     {
       tsTypes: {} as import('./toastMachine.typegen').Typegen0,
       schema: {
-        context: {
-          toasts: []
-        } as ToastContext,
+        context: {} as ToastContext,
         events: {} as ToastEvent
+      },
+      context: {
+        toasts: []
       },
       id: 'toast',
       initial: closed,
