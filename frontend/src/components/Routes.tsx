@@ -21,7 +21,10 @@ const AppRoutes: FC = () => {
   const { toastService, authService } = useAppContext();
   const [toastState, toastSend] = useActor(toastService);
   const [authState, authSend] = useActor(authService);
-  console.log('toastState: ', toastState);
+  const { context } = toastState;
+  const toasts = context.getToasts();
+  console.log(toasts);
+
   return (
     <AppContainer>
       <Routes>
@@ -30,8 +33,9 @@ const AppRoutes: FC = () => {
         })}
       </Routes>
       <ToastContainer>
-        {toastState.context.toasts.map(({ id, title, jsx }) => {
-          <Toast id={id} title={title} description={jsx} />;
+        {toasts.map(({ id, title, jsx }) => {
+          console.log({ id, title, jsx });
+          return <Toast toastId={id} title={title} description={jsx} />;
         })}
       </ToastContainer>
     </AppContainer>

@@ -1,21 +1,19 @@
-import { createMachine, assign } from 'xstate';
+import { createMachine, assign, send, actions } from 'xstate';
 import { nanoid } from 'nanoid';
 import { http } from '@/api';
 
 const toastState = {
   closed: 'closed',
-  opening: 'opening',
   opened: 'opened',
-  closing: 'closing',
   fetching: 'fetching'
 };
 
-const { closed, opening, opened, closing, fetching } = toastState;
+const { closed, opened } = toastState;
 
 export type ToastEvent =
   | {
       type: 'OPEN';
-      mode: 'A' | 'B';
+      toastMeta: Omit<SingleToast, 'id'>;
     }
   | {
       type: 'CLOSE';
@@ -32,32 +30,35 @@ interface SingleToast {
 export interface ToastContext {
   timeout?: number;
   sleepTime?: number;
-  toasts: SingleToast[];
+  getToasts: () => SingleToast[];
+  toastMap: Map<string, SingleToast>;
 }
 
-const sleep = (ms: number = 3000) =>
-  new Promise((resolve) => {
-    setTimeout(() => resolve(true), ms);
-  });
-
-const fetchMode = {
-  A: (params?: Record<string, string>) => http.GET('fetchA', { params }),
-  B: (data?: Record<string, any>) => http.POST('fetchB', { data })
-};
-
-const fetcher = (context: ToastContext, event: ToastEvent) => {
+const openToast = assign((context: ToastContext, event: ToastEvent) => {
   if (event.type === 'OPEN') {
-    try {
-      return fetchMode[event.mode]();
-    } catch (error: any) {
-      return Promise.reject({ error });
-    }
+    const uniqueId = nanoid();
+    context.toastMap.set(uniqueId, {
+      ...event.toastMeta,
+      id: uniqueId
+    });
+    return {
+      ...context,
+      toastMap: context.toastMap
+    };
   }
-  return Promise.reject({ error: true });
-};
+  return context;
+});
+
+const closeToast = assign((context, event) => {});
 
 // testing을 위해 함수형태로 만듬
 const createToastMachine = () => {
+  const initialContext = {
+    toastMap: new Map(),
+    getToasts() {
+      return Array.from(initialContext.toastMap.values());
+    }
+  };
   return createMachine(
     {
       tsTypes: {} as import('./toastMachine.typegen').Typegen0,
@@ -65,70 +66,28 @@ const createToastMachine = () => {
         context: {} as ToastContext,
         events: {} as ToastEvent
       },
-      context: {
-        toasts: []
-      },
+      context: initialContext,
       id: 'toast',
       initial: closed,
       states: {
         [opened]: {
           on: {
-            CLOSE: closing
-          },
-          invoke: {
-            src: sleep
+            CLOSE: closed
           }
         },
         [closed]: {
-          on: {}
-        },
-        [opening]: {
-          // eventless transition -  https://xstate.js.org/docs/guides/transitions.html#eventless-always-transitions
-          always: {
-            target: opened,
-            cond: 'hasFetch'
-          },
           on: {
-            OPEN: opened
-          }
-        },
-        [closing]: {},
-        [fetching]: {
-          entry: 'executeFetching',
-          invoke: {
-            src: fetcher,
-            onDone: [
-              {
-                target: 'opened',
-                cond(_ctx, event) {
-                  // guarded transition
-                  // https://xstate.js.org/docs/guides/guards.html#guards-condition-functions
-                  return event.type === 'OPEN';
-                },
-                actions: assign((_ctx, event) => {
-                  return {
-                    ...event.data,
-                    id: nanoid()
-                  };
-                })
-              },
-              {
-                target: 'closed',
-                cond(_ctx, event) {
-                  return event.type === 'CLOSE';
-                },
-                actions: assign((_ctx, event) => {
-                  return event.data;
-                })
-              }
-            ]
+            OPEN: {
+              target: 'opened',
+              actions: 'openToast'
+            }
           }
         }
       }
     },
     {
-      guards: {
-        hasFetch: (context) => !!context.hasFetch
+      actions: {
+        openToast
       }
     }
   );

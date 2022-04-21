@@ -1,22 +1,42 @@
 import { http } from '@/api';
 import { useAppContext } from '@/hooks';
 import { useActor } from '@xstate/react';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { BlackButton, ErrorField, Icon, TextField } from '..';
+import { nanoid } from 'nanoid';
 
 export const AuthModal: FC = ({}) => {
   const { register, handleSubmit, formState, getValues } = useForm({});
   const { errors } = formState;
-  const { modalService, authService } = useAppContext();
+  const { modalService, authService, toastService } = useAppContext();
   const [_, modalSend] = useActor(modalService);
   const [auth, authSend] = useActor(authService);
+  const [toast, toastSend] = useActor(toastService);
 
   const handleClose = () => {
     modalSend({
       type: 'CLOSE'
     });
   };
+
+  useEffect(() => {
+    const { unsubscribe } = authService.subscribe((nextState) => {
+      if (nextState.history?.value === 'loading' && nextState.value === 'rejected') {
+        toastSend({
+          type: 'OPEN',
+          toastMeta: {
+            title: '로그인',
+            jsx: <div>아이디와 패스워드를 확인해주세요.'</div>
+          }
+        });
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const isValidField = (name: 'id' | 'password') => {
     if (name === 'id') {
