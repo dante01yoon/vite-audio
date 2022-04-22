@@ -40,6 +40,10 @@ export const login = async (req: Request, res: Response, next) => {
 
     if (!session) {
       res.status(401);
+      res.json({
+        statusCode: 401,
+        message: "user info not correct'"
+      })
       res.end();
     } else {
       if (session.password === password) {
@@ -52,6 +56,7 @@ export const login = async (req: Request, res: Response, next) => {
   } catch (error) {
     if (error.status === 401) {
       res.status(401);
+      
       res.end();
     } else {
       res.status(500);

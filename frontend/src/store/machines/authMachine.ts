@@ -10,55 +10,70 @@ const machineState = {
   rejected: 'rejected'
 };
 
-interface AuthContext {
+export interface AuthContext {
   session: any;
+  refresh: boolean;
 }
 
-interface SignUpEvent {
+export type AuthEvent =
+  | SignUpEvent
+  | SignOutEvent
+  | SignInEvent
+  | SignedInEvent
+  | SignedOutEvent
+  | SignMeEvent;
+
+type SignUpEvent = {
   type: 'SIGNUP';
   data: {
     id: string;
     password: string;
     passwordConfirm: string;
   };
-}
+};
 
-interface SignOutEvent {
+type SignOutEvent = {
   type: 'SIGNOUT';
-}
+};
 
-interface SignInEvent {
+type SignInEvent = {
   type: 'SIGNIN';
   data: {
     id: string;
     password: string;
   };
-}
+};
 
-interface SignedInEvent {
+type SignedInEvent = {
   type: 'SIGNEDIN';
   data: {
     session: User;
   };
-}
+};
 
-interface SignedOutEvent {
+type SignedOutEvent = {
   type: 'SIGNEDOUT';
-}
+};
 
-interface SignMeEvent {
+type SignMeEvent = {
   type: 'SIGNME';
-}
+};
 
 const fetchSignIn = async (data: SignInEvent['data']) => {
-  const response = await http.POST<{ user: User }>('/user/signIn', {
-    data
-  });
+  try {
+    const response = await http.POST<{ user: User }>('/user/signIn', {
+      data
+    });
 
-  return {
-    by: 'SIGNIN',
-    ...response.user
-  };
+    return {
+      by: 'SIGNIN',
+      ...response.user
+    };
+  } catch (e) {
+    return Promise.reject({
+      refresh: false
+    });
+  }
 };
 
 const fetchSignUp = async (data: SignUpEvent['data']) => {
@@ -81,18 +96,27 @@ const fetchSignOut = async () => {
 };
 
 const fetchSignMe = async () => {
-  const response = await http.POST<{ user: User }>('/user/me');
-  return {
-    by: 'SIGNME',
-    ...response.user
-  };
+  try {
+    const response = await http.POST<{ user: User }>('/user/me');
+    return {
+      by: 'SIGNME',
+      ...response.user,
+      refresh: true
+    };
+  } catch (error) {
+    return Promise.reject({
+      refresh: true
+    });
+  }
 };
 
 export const authMachine = createMachine(
   {
+    tsTypes: {} as import('./authMachine.typegen').Typegen0,
     initial: machineState.signedOut,
     schema: {
-      context: {} as AuthContext
+      context: {} as AuthContext,
+      events: {} as AuthEvent
     },
     states: {
       [machineState.signedIn]: {
@@ -181,8 +205,12 @@ export const authMachine = createMachine(
         on: {
           SIGNIN: machineState.loading,
           SIGNOUT: machineState.loading,
-          SIGNUP: machineState.loading
-        }
+          SIGNUP: machineState.loading,
+          SIGNEDOUT: machineState.signedOut
+        },
+        entry: send((context, event) => {
+          return { type: 'SIGNEDOUT' };
+        })
       }
     }
   },

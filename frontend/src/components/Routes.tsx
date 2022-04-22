@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { IndexPage, AudioPage, NotFoundPage } from '@pages/index';
 import { Routes, Route } from 'react-router-dom';
 import { AppContainer } from '@components/index';
+
 interface AppRoutes {
   path: string;
   component: JSX.Element;
