@@ -2,11 +2,16 @@ import { FC, useEffect } from 'react';
 import { useAppContext } from '@hooks/.';
 import { useActor } from '@xstate/react';
 import { AuthModal, SignUpModal } from '..';
+import Toast, { ToastContainer } from '@components/Toast';
 
 export const AppContainer: FC = ({ children }) => {
-  const { modalService, authService } = useAppContext();
+  const { modalService, authService, toastService } = useAppContext();
   const [modalState] = useActor(modalService);
   const [authState, sendAuthState] = useActor(authService);
+  const [toastState, toastSend] = useActor(toastService);
+  const {
+    context: { getToasts }
+  } = toastState;
 
   useEffect(() => {
     sendAuthState('SIGNME');
@@ -24,7 +29,13 @@ export const AppContainer: FC = ({ children }) => {
   })(modalState.context.type);
 
   return (
-    <main className="relative">
+    <>
+      <ToastContainer className="z-50">
+        {getToasts().map(({ id, title, jsx }) => {
+          console.log({ id, title, jsx });
+          return <Toast toastId={id} title={title} description={jsx} />;
+        })}
+      </ToastContainer>
       <div className="relative z-10">{children}</div>
       {modalState.matches('opened') && (
         <div id="modalRoot" className="fixed z-20 h-full w-full top-0 left-0">
@@ -32,6 +43,6 @@ export const AppContainer: FC = ({ children }) => {
           {modal}
         </div>
       )}
-    </main>
+    </>
   );
 };
