@@ -1,6 +1,7 @@
 import { createMachine, assign, send, actions } from 'xstate';
 import { nanoid } from 'nanoid';
 import { http } from '@/api';
+import { F } from 'rambda';
 
 const toastState = {
   closed: 'closed',
@@ -17,6 +18,7 @@ export type ToastEvent =
     }
   | {
       type: 'CLOSE';
+      toastId: SingleToast['id'];
     };
 
 interface SingleToast {
@@ -49,7 +51,13 @@ const openToast = assign((context: ToastContext, event: ToastEvent) => {
   return context;
 });
 
-const closeToast = assign((context, event) => {});
+const closeToast = assign((context: ToastContext, event: ToastEvent) => {
+  if (event.type === 'CLOSE') {
+    context.toastMap.delete(event.toastId);
+  }
+
+  return context;
+});
 
 // testing을 위해 함수형태로 만듬
 const createToastMachine = () => {
@@ -72,7 +80,10 @@ const createToastMachine = () => {
       states: {
         [opened]: {
           on: {
-            CLOSE: closed
+            CLOSE: {
+              target: 'closed',
+              actions: 'closeToast'
+            }
           }
         },
         [closed]: {
@@ -87,7 +98,8 @@ const createToastMachine = () => {
     },
     {
       actions: {
-        openToast
+        openToast,
+        closeToast
       }
     }
   );

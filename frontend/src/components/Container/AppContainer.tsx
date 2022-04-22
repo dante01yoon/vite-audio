@@ -30,9 +30,8 @@ export const AppContainer: FC = ({ children }) => {
 
   return (
     <>
-      <ToastContainer className="z-50">
+      <ToastContainer>
         {getToasts().map(({ id, title, jsx }) => {
-          console.log({ id, title, jsx });
           return <Toast toastId={id} title={title} description={jsx} />;
         })}
       </ToastContainer>
