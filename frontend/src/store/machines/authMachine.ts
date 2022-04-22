@@ -12,6 +12,7 @@ const machineState = {
 
 export interface AuthContext {
   session: any;
+  refresh: boolean;
 }
 
 export type AuthEvent =
@@ -59,14 +60,20 @@ type SignMeEvent = {
 };
 
 const fetchSignIn = async (data: SignInEvent['data']) => {
-  const response = await http.POST<{ user: User }>('/user/signIn', {
-    data
-  });
+  try {
+    const response = await http.POST<{ user: User }>('/user/signIn', {
+      data
+    });
 
-  return {
-    by: 'SIGNIN',
-    ...response.user
-  };
+    return {
+      by: 'SIGNIN',
+      ...response.user
+    };
+  } catch (e) {
+    return Promise.reject({
+      refresh: false
+    });
+  }
 };
 
 const fetchSignUp = async (data: SignUpEvent['data']) => {
@@ -89,11 +96,18 @@ const fetchSignOut = async () => {
 };
 
 const fetchSignMe = async () => {
-  const response = await http.POST<{ user: User }>('/user/me');
-  return {
-    by: 'SIGNME',
-    ...response.user
-  };
+  try {
+    const response = await http.POST<{ user: User }>('/user/me');
+    return {
+      by: 'SIGNME',
+      ...response.user,
+      refresh: true
+    };
+  } catch (error) {
+    return Promise.reject({
+      refresh: true
+    });
+  }
 };
 
 export const authMachine = createMachine(
@@ -191,8 +205,12 @@ export const authMachine = createMachine(
         on: {
           SIGNIN: machineState.loading,
           SIGNOUT: machineState.loading,
-          SIGNUP: machineState.loading
-        }
+          SIGNUP: machineState.loading,
+          SIGNEDOUT: machineState.signedOut
+        },
+        entry: send((context, event) => {
+          return { type: 'SIGNEDOUT' };
+        })
       }
     }
   },

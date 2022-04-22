@@ -27,7 +27,7 @@ export const AuthModal: FC = ({}) => {
           type: 'OPEN',
           toastMeta: {
             title: '로그인',
-            jsx: <div>아이디와 패스워드를 확인해주세요.'</div>
+            jsx: <div>계정 정보를 확인해주세요</div>
           }
         });
       }

@@ -77,7 +77,7 @@ const IndexPage: FC<IndexPageProps> = () => {
     const { data: tts } = await ttsResponse.refetch({ cancelRefetch: true });
     const audioContext = new AudioContext();
     // TODO 타입 수정
-    const audioBuffer = await audioContext.decodeAudioData(tts as ArrayBuffer[][0]);
+    const audioBuffer = await audioContext.decodeAudioData(tts as unknown as ArrayBuffer[][0]);
     const source = audioContext.createBufferSource();
     source.buffer = audioBuffer;
     source.connect(audioContext.destination);
@@ -90,7 +90,7 @@ const IndexPage: FC<IndexPageProps> = () => {
         <article className="w-full">
           <Translate register={register} name="original" maxLength={300} languageFrom="en" />
           <BlackButton className="mt-[37px]" onClick={protectedHandler(handleTranslate)}>
-            번역 꼬우
+            번역 하기
           </BlackButton>
         </article>
         <article className="w-full">
@@ -131,7 +131,7 @@ const IndexPage: FC<IndexPageProps> = () => {
               {errors.link && <div>링크를 정확히 입력해주세요</div>}
             </div>
             <BlackButton className="max-w-[577px]" onClick={protectedHandler(handleCreateCard)}>
-              카드 생성 꼬우
+              카드 생성하기
             </BlackButton>
           </div>
         </article>
