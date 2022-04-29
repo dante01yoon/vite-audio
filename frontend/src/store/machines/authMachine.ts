@@ -1,5 +1,5 @@
 import { http } from '@/api';
-import { User } from '@/payload';
+import { AuthError, User } from '@/payload';
 import { assign, createMachine, send } from 'xstate';
 
 const machineState = {
@@ -104,6 +104,11 @@ const fetchSignMe = async () => {
       refresh: true
     };
   } catch (error) {
+    if (error instanceof AuthError) {
+      return Promise.reject({
+        refresh: true
+      });
+    }
     return Promise.reject({
       refresh: true
     });
