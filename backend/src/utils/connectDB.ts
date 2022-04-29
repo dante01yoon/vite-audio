@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { logging } from ".";
 
 export const connectDB = async (
   successCB?: () => void,
@@ -6,7 +7,7 @@ export const connectDB = async (
 ) => {
   const db = mongoose.connection;
   db.on("connecting", () => {
-    console.log("connecting mongoose...");
+    logging.write("connecting mongoose...");
   });
   db.on("connected", () => {
     if (successCB) {

@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
-import { connectDB } from "./utils";
+import { connectDB, logging } from "./utils";
 import {
   translateRouter as translate,
   ttsRouter as tts,
@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 app.use("/user", user);
 app.use("/translate", authChecker, translate);
 app.use("/tts", authChecker, tts);
-connectDB(() => console.log("db is connected"));
+connectDB(() => logging.write("db is connected"));
 app.listen(PORT, () => {
-  console.log(`app is running on PORT ${PORT}`);
+ logging.write(`app is running on PORT ${PORT}`);
 });
