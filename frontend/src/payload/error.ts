@@ -39,6 +39,7 @@ export const errorInstanceMaker = (
   if (response) {
     switch (response.status) {
       case 401:
+      case 400:
         return new AuthError(response.data.message || errorMessage.userMe);
     }
   }
