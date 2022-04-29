@@ -1,7 +1,6 @@
 import { createMachine, assign, send, actions } from 'xstate';
 import { nanoid } from 'nanoid';
 import { http } from '@/api';
-import { F } from 'rambda';
 
 const toastState = {
   closed: 'closed',

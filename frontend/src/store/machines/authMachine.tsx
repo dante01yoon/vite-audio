@@ -1,7 +1,9 @@
 import { http } from '@/api';
 import { AuthError, User } from '@/payload';
-import { assign, createMachine, send } from 'xstate';
+import { assign, createMachine, send, actions } from 'xstate';
+import { toastMachine } from './toastMachine';
 
+const { choose, log } = actions;
 const machineState = {
   signedOut: 'signedOut',
   signedIn: 'signedIn',
@@ -71,28 +73,43 @@ const fetchSignIn = async (data: SignInEvent['data']) => {
     };
   } catch (e) {
     return Promise.reject({
-      refresh: false
+      refresh: false,
+      by: 'SIGNIN'
     });
   }
 };
 
 const fetchSignUp = async (data: SignUpEvent['data']) => {
-  const response = await http.POST<{ user: User }>('/user/signUp', {
-    data
-  });
+  try {
+    const response = await http.POST<{ user: User }>('/user/signUp', {
+      data
+    });
 
-  return {
-    by: 'SIGNUP',
-    ...response.user
-  };
+    return {
+      by: 'SIGNUP',
+      ...response.user
+    };
+  } catch (e) {
+    if (e instanceof AuthError) {
+      return Promise.reject({
+        by: 'SIGNUP'
+      });
+    }
+  }
 };
 
 const fetchSignOut = async () => {
-  const response = await http.POST<any>('/user/signOut');
-  return {
-    by: 'SIGNOUT',
-    ...response.user
-  };
+  try {
+    const response = await http.POST<any>('/user/signOut');
+    return {
+      by: 'SIGNOUT',
+      ...response.user
+    };
+  } catch (e) {
+    return {
+      by: 'SIGNOUT'
+    };
+  }
 };
 
 const fetchSignMe = async () => {
@@ -106,12 +123,10 @@ const fetchSignMe = async () => {
   } catch (error) {
     if (error instanceof AuthError) {
       return Promise.reject({
+        by: 'SIGNME',
         refresh: true
       });
     }
-    return Promise.reject({
-      refresh: true
-    });
   }
 };
 
@@ -207,20 +222,40 @@ export const authMachine = createMachine(
         })
       },
       [machineState.rejected]: {
+        invoke: {
+          id: 'toast',
+          src: toastMachine
+        },
         on: {
           SIGNIN: machineState.loading,
           SIGNOUT: machineState.loading,
           SIGNUP: machineState.loading,
           SIGNEDOUT: machineState.signedOut
         },
-        entry: send((context, event) => {
-          return { type: 'SIGNEDOUT' };
-        })
+        entry: [
+          send((context, event) => {
+            return { type: 'SIGNEDOUT' };
+          }),
+          'reject-handler'
+        ]
       }
     }
   },
   {
     actions: {
+      'reject-handler': choose([
+        {
+          cond: (_, { data }) => {
+            return data.by === 'SIGNUP';
+          },
+          actions: [
+            send(
+              { type: 'OPEN', toastMeta: { jsx: <div>이미 존재하는 아이디입니다.</div> } },
+              { to: 'toast' }
+            )
+          ]
+        }
+      ]),
       'done-fetching': assign((context: AuthContext, event) => {
         switch (event.type) {
           case 'SIGNEDIN':

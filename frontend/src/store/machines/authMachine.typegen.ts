@@ -4,6 +4,7 @@ export interface Typegen0 {
   '@@xstate/typegen': true;
   eventsCausingActions: {
     'done-fetching': 'SIGNEDIN' | 'SIGNEDME' | 'SIGNEDUP';
+    'reject-handler': 'error.platform.fetch-auth';
   };
   internalEvents: {
     'done.invoke.fetch-auth': {

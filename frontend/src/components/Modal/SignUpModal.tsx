@@ -8,9 +8,9 @@ import { BlackButton, ErrorField, Icon, TextField } from '..';
 export const SignUpModal: FC = () => {
   const { register, formState, getValues, handleSubmit } = useForm();
   const { errors } = formState;
-  const { modalService } = useAppContext();
+  const { modalService, authService } = useAppContext();
   const [_, modalSend] = useActor(modalService);
-
+  const [authState, authSend] = useActor(authService);
   const handleClose = () => {
     modalSend({
       type: 'CLOSE'
@@ -40,20 +40,14 @@ export const SignUpModal: FC = () => {
 
   const handleSignUp = async () => {
     if (isValidField('id') && isValidField('password') && isValidField('passwordConfirm')) {
-      try {
-        const response = await http.POST('/user/signUp', {
-          data: {
-            id: getValues('id'),
-            password: getValues('password'),
-            passwordConfirm: getValues('passwordConfirm')
-          }
-        });
-      } catch (e) {
-        if (e instanceof Error) {
-        } else {
-          console.log('status is not included');
+      authSend({
+        type: 'SIGNUP',
+        data: {
+          id: getValues('id'),
+          password: getValues('password'),
+          passwordConfirm: getValues('passwordConfirm')
         }
-      }
+      });
     }
   };
 
