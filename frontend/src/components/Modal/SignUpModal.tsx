@@ -40,13 +40,20 @@ export const SignUpModal: FC = () => {
 
   const handleSignUp = async () => {
     if (isValidField('id') && isValidField('password') && isValidField('passwordConfirm')) {
-      const response = await http.POST('/user/signUp', {
-        data: {
-          id: getValues('id'),
-          password: getValues('password'),
-          passwordConfirm: getValues('passwordConfirm')
+      try {
+        const response = await http.POST('/user/signUp', {
+          data: {
+            id: getValues('id'),
+            password: getValues('password'),
+            passwordConfirm: getValues('passwordConfirm')
+          }
+        });
+      } catch (e) {
+        if (e instanceof Error) {
+        } else {
+          console.log('status is not included');
         }
-      });
+      }
     }
   };
 
@@ -98,7 +105,7 @@ export const SignUpModal: FC = () => {
           회원가입
         </BlackButton>
         <BlackButton className="mt-3" onClick={handleLogin}>
-          가입 계정이 존재함
+          로그인 하기
         </BlackButton>
       </form>
     </div>

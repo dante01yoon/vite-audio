@@ -2,6 +2,21 @@ import { Request, Response } from "express";
 import { User } from "../models";
 import { AuthError } from "../response";
 
+export class ValidationError extends Error {
+  status: number;
+  data: Record<string, string>;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.data = {
+      message: message
+    };
+    this.status = status;
+    this.name = 'validation error';
+  }
+}
+
+
 export const me = async (req: Request, res: Response, next) => {
   const session = req.body.session;
   res.status(200).json({ user: session });
@@ -25,7 +40,7 @@ export const register = async (req: Request, res: Response, next) => {
     next();
   } catch (error) {
     if (error.message.indexOf("duplicate key error") !== -1) {
-      res.status(400).json({ message: "this id can't be use" });
+      res.status(400).json({message: "this id can't be use"});
     } else {
       res.status(500);
       res.end();
