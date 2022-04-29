@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useLayoutEffect } from 'react';
 import { useAppContext } from '@hooks/.';
 import { useActor } from '@xstate/react';
 import { AuthModal, SignUpModal } from '..';
@@ -13,7 +13,8 @@ export const AppContainer: FC = ({ children }) => {
     context: { getToasts }
   } = toastState;
 
-  useEffect(() => {
+  // FIXME 여기에 useLayoutEffect를 사용해도 괜찮은가?
+  useLayoutEffect(() => {
     sendAuthState('SIGNME');
   }, []);
 
