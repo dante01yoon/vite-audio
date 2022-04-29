@@ -1,4 +1,5 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AuthError, errorInstanceMaker } from '@/payload';
+import axios, { Axios, AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 type AppResponse<T> = [AxiosResponse<T>, AxiosError | null];
 
@@ -42,13 +43,7 @@ const request = async <T>(config: AxiosRequestConfig): Promise<T> => {
     const { data } = await appAxiosClient.request<T>({ ...config });
     return data;
   } catch (error) {
-    const { response } = error as unknown as AxiosError;
-
-    if (response) {
-      throw { status: response.status, data: response.data };
-    }
-
-    throw error;
+    throw errorInstanceMaker(error as unknown as AxiosError);
   }
 };
 
