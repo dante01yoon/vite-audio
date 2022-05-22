@@ -63,6 +63,13 @@ async function DELETE<T>(url: string, config?: Omit<AxiosRequestConfig, 'url'>):
   return request<T>({ ...config, method: 'DELETE', url });
 }
 
+export interface HTTP {
+  GET: typeof GET;
+  PUT: typeof PUT;
+  POST: typeof POST;
+  DELETE: typeof DELETE;
+}
+
 export default {
   GET,
   PUT,
